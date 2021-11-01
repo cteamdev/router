@@ -39,11 +39,11 @@ export class Router {
       this.getUrl(this.options.defaultRoute)
     );
 
-    window.addEventListener('popstate', this.onPopState.bind(this));
+    window.addEventListener('popstate', this.onPopstate.bind(this));
   }
 
   public stop(): void {
-    window.removeEventListener('popstate', this.onPopState.bind(this));
+    window.removeEventListener('popstate', this.onPopstate.bind(this));
   }
 
   public subscribe(subscriber: Subscriber): Unsubscriber {
@@ -74,7 +74,7 @@ export class Router {
     history.go(delta);
   }
 
-  public onPopState({ state }: PopStateEvent): void {
+  public onPopstate({ state }: PopStateEvent): void {
     if (this.history.some((currentState) => currentState.id === state.id)) {
       this.history.pop();
       this.emit(RouterEvent.BACK, state);
