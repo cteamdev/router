@@ -22,15 +22,7 @@ export class Router {
   constructor(
     public readonly structure: RootStructure,
     public readonly options: Options
-  ) {
-    history.replaceState(
-      this.state,
-      this.options.defaultRoute,
-      this.getUrl(this.options.defaultRoute)
-    );
-
-    window.onpopstate = this.onPopState.bind(this);
-  }
+  ) {}
 
   public get viewHistory(): string[] {
     const view: string = this.state.view;
@@ -38,6 +30,20 @@ export class Router {
     return this.history
       .filter((state) => state.view === view)
       .map((state) => state.panel);
+  }
+
+  public start(): void {
+    history.replaceState(
+      this.state,
+      this.options.defaultRoute,
+      this.getUrl(this.options.defaultRoute)
+    );
+
+    window.addEventListener('popstate', this.onPopState.bind(this));
+  }
+
+  public stop(): void {
+    window.removeEventListener('popstate', this.onPopState.bind(this));
   }
 
   public subscribe(subscriber: Subscriber): Unsubscriber {
