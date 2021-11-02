@@ -33,6 +33,8 @@ export class Router {
   public state: State;
   public history: State[];
 
+  public swipebackHistory: string[];
+
   constructor(
     options: Partial<Options>,
     structure: RootStructure | null = null
@@ -43,16 +45,9 @@ export class Router {
       ? this.parsePath(this.options.defaultRoute)!
       : this.createState();
     this.history = [this.state];
+    this.swipebackHistory = [this.state.panel];
 
     this.onPopstate = this.onPopstate.bind(this);
-  }
-
-  public get viewHistory(): string[] {
-    const view: string = this.state.view;
-
-    return this.history
-      .filter((state) => state.view === view)
-      .map((state) => state.panel);
   }
 
   public get shouldClose(): boolean {
@@ -127,6 +122,9 @@ export class Router {
     history.pushState(state, path, this.getUrl(path));
     this.history.push(state);
 
+    if (this.state.view === state.view) this.swipebackHistory.push(state.panel);
+    else this.swipebackHistory = [state.panel];
+
     this.emit(RouterEvent.PUSH, state);
   }
 
@@ -139,6 +137,10 @@ export class Router {
     history.replaceState(state, path, this.getUrl(path));
     this.history[this.history.length - 1] = state;
 
+    if (this.state.view === state.view)
+      this.swipebackHistory[this.swipebackHistory.length - 1] = state.panel;
+    else this.swipebackHistory = [state.panel];
+
     this.emit(RouterEvent.REPLACE, state);
   }
 
@@ -150,19 +152,25 @@ export class Router {
     history.go(delta);
   }
 
-  public onPopstate({ state }: PopStateEvent): void {
+  private onPopstate({ state }: PopStateEvent): void {
     if (this.history.some((currentState) => currentState.id === state.id)) {
       if (this.history.length === 1) this.closeApp();
 
       this.history.pop();
+      this.swipebackHistory.pop();
       this.emit(RouterEvent.BACK, state);
     } else {
       this.history.push(state);
+
+      if (this.state.view === state.view)
+        this.swipebackHistory.push(state.panel);
+      else this.swipebackHistory = [state.panel];
+
       this.emit(RouterEvent.PUSH, state);
     }
   }
 
-  public emit(event: RouterEvent, state: State): void {
+  private emit(event: RouterEvent, state: State): void {
     this.state = state;
     this.subscribers.forEach((subscriber) => subscriber(event, state));
   }
@@ -195,7 +203,7 @@ export class Router {
     if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
   }
 
-  public createState(params?: Params, meta?: Meta): State {
+  private createState(params?: Params, meta?: Meta): State {
     return {
       view: '/',
       panel: '/',
@@ -207,7 +215,7 @@ export class Router {
     };
   }
 
-  public getUrl(path: string): string {
+  private getUrl(path: string): string {
     const urls: Record<Mode, string> = {
       hash: '#' + path,
       none: '',
@@ -217,7 +225,7 @@ export class Router {
     return urls[this.options.mode];
   }
 
-  public parseApp(app: ReactNode): RootStructure {
+  private parseApp(app: ReactNode): RootStructure {
     const structure: RootStructure = {
       type: 'root',
       children: []
@@ -266,7 +274,7 @@ export class Router {
     return structure;
   }
 
-  public parsePath(path: string, meta?: Meta): State | void {
+  private parsePath(path: string, meta?: Meta): State | void {
     if (!this.structure) {
       if (dev)
         console.warn(

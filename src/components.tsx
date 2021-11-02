@@ -79,7 +79,7 @@ export const View = (
       router && (
         <VKUIView
           activePanel={router.state.panel}
-          history={router.viewHistory}
+          history={router.swipebackHistory}
           onSwipeBack={router.back}
           {...props}
         >
