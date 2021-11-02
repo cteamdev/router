@@ -1,8 +1,16 @@
 export type Mode = 'none' | 'path' | 'hash';
+export type Style = 'auto' | 'mobile' | 'desktop';
 
 export type Options = {
   mode: Mode;
+  style: Style;
+
+  /**
+   * @deprecated
+   * Рекомендуется не использовать, если / - это не пустой экран.
+   */
   defaultRoute: string;
+
   shouldClose: boolean;
 };
 

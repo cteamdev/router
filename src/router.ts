@@ -19,10 +19,11 @@ import {
   Mode,
   Params,
   Meta,
-  RouterEvent
+  RouterEvent,
+  Style
 } from './types';
 import { Root, Epic, View } from './components';
-import { defaultOptions, dev } from './constants';
+import { dev, defaultOptions, platformStyle } from './constants';
 
 export class Router {
   public options: Options;
@@ -57,6 +58,18 @@ export class Router {
     return bridge.supports('VKWebAppClose') && this.options.shouldClose;
   }
 
+  public get style(): Style {
+    if (bridge.isEmbedded()) {
+      const params: URLSearchParams = new URLSearchParams(location.search);
+      const platform: string | null =
+        params.get('vk_platform') ?? 'desktop_web';
+
+      return platformStyle[platform] ?? 'mobile';
+    }
+
+    return 'desktop';
+  }
+
   public start(): void {
     history.replaceState(
       this.state,
@@ -69,23 +82,6 @@ export class Router {
 
   public stop(): void {
     window.removeEventListener('popstate', this.onPopstate.bind(this));
-  }
-
-  public initStructure(app: ReactNode): void {
-    if (this.structure) {
-      if (dev)
-        console.warn(
-          'Пропускаем автоматическую инициализацию структуры, так как она уже определена.'
-        );
-
-      return;
-    }
-
-    this.structure = this.parseApp(app);
-  }
-
-  public closeApp(): void {
-    if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
   }
 
   public subscribe(subscriber: Subscriber): Unsubscriber {
@@ -142,6 +138,29 @@ export class Router {
     }
   }
 
+  public emit(event: RouterEvent, state: State): void {
+    this.state = state;
+    this.subscribers.forEach((subscriber) => subscriber(event, state));
+  }
+
+  public initStructure(app: ReactNode): void {
+    if (this.structure) {
+      if (dev)
+        console.warn(
+          'Пропускаем автоматическую инициализацию структуры, так как она уже определена.'
+        );
+
+      return;
+    }
+
+    this.structure = this.parseApp(app);
+    setTimeout(() => this.replace(this.options.defaultRoute), 0);
+  }
+
+  public closeApp(): void {
+    if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
+  }
+
   public createState(params?: Params, meta?: Meta): State {
     return {
       view: '/',
@@ -152,11 +171,6 @@ export class Router {
       meta: meta ?? {},
       params: params ?? {}
     };
-  }
-
-  public emit(event: RouterEvent, state: State): void {
-    this.state = state;
-    this.subscribers.forEach((subscriber) => subscriber(event, state));
   }
 
   public getUrl(path: string): string {

@@ -1,4 +1,4 @@
-import { Options } from './types';
+import { Options, Style } from './types';
 
 export const dev: boolean =
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -7,6 +7,14 @@ export const dev: boolean =
 
 export const defaultOptions: Options = {
   mode: 'hash',
+  style: 'auto',
   defaultRoute: '/',
   shouldClose: true
+};
+
+export const platformStyle: Record<string, Style> = {
+  iphone: 'mobile',
+  android: 'mobile',
+  mobile_web: 'mobile',
+  desktop_web: 'desktop'
 };
