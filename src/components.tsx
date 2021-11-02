@@ -1,4 +1,4 @@
-import type { FC, DetailedReactHTMLElement } from 'react';
+import type { FC, DetailedReactHTMLElement, ReactElement } from 'react';
 
 import React, { Children, useEffect, useState, cloneElement } from 'react';
 import {
@@ -12,6 +12,7 @@ import {
 
 import { Router } from './router';
 import { RouterContext } from './context';
+import { useRouter } from './hooks';
 
 type RouterProps = {
   value: Router;
@@ -32,6 +33,18 @@ export const RouterProvider: FC<RouterProps> = ({
       )}
     </RouterContext.Provider>
   );
+};
+
+type StructureProps = {
+  children: ReactElement;
+};
+
+export const Structure: FC<StructureProps> = ({ children }: StructureProps) => {
+  const router = useRouter();
+
+  useEffect(() => router.initStructure(children), []);
+
+  return children;
 };
 
 export const Root = (props: Omit<RootProps, 'activeView'>) => (

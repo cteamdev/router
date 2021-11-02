@@ -1,4 +1,11 @@
+import { isValidElement, JSXElementConstructor, ReactNode } from 'react';
 import { parse } from 'querystring';
+import { deepForEach } from 'react-children-utilities';
+import {
+  Root as VKUIRoot,
+  Epic as VKUIEpic,
+  View as VKUIView
+} from '@vkontakte/vkui';
 
 import {
   Options,
@@ -12,16 +19,23 @@ import {
   Meta,
   RouterEvent
 } from './types';
+import { Root, Epic, View } from './components';
 
 export class Router {
-  public state: State = this.parsePath(this.options.defaultRoute);
-
+  public state: State = this.structure
+    ? this.parsePath(this.options.defaultRoute)!
+    : this.createState();
   public history: State[] = [this.state];
+
+  public dev: boolean =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    (process.env.NODE_ENV || import.meta.env.MODE) === 'development';
   public subscribers: Subscriber[] = [];
 
   constructor(
-    public readonly structure: RootStructure,
-    public readonly options: Options
+    public options: Options,
+    public structure: RootStructure | null = null
   ) {}
 
   public get viewHistory(): string[] {
@@ -46,6 +60,19 @@ export class Router {
     window.removeEventListener('popstate', this.onPopstate.bind(this));
   }
 
+  public initStructure(app: ReactNode): void {
+    if (this.structure) {
+      if (this.dev)
+        console.warn(
+          'Пропускаем автоматическую инициализацию структуры, так как она уже определена.'
+        );
+
+      return;
+    }
+
+    this.structure = this.parseApp(app);
+  }
+
   public subscribe(subscriber: Subscriber): Unsubscriber {
     this.subscribers.push(subscriber);
 
@@ -57,7 +84,9 @@ export class Router {
   }
 
   public push(path: string, meta?: Meta): void {
-    const state: State = this.parsePath(path, meta);
+    const state: State | void = this.parsePath(path, meta);
+    if (!state) return;
+
     state.id = Math.floor(Math.random() * 9999) + 1;
 
     history.pushState(state, path, this.getUrl(path));
@@ -111,7 +140,65 @@ export class Router {
     return urls[this.options.mode];
   }
 
-  public parsePath(path: string, meta?: Meta): State {
+  public parseApp(app: ReactNode): RootStructure {
+    const structure: RootStructure = {
+      type: 'root',
+      children: []
+    };
+
+    deepForEach(app, (child: ReactNode) => {
+      if (!isValidElement(child)) return child;
+
+      const type: string | JSXElementConstructor<any> = child.type;
+      const nav: string = child.props.nav;
+
+      switch (type) {
+        case Root:
+          structure.type = 'root';
+          break;
+
+        case Epic:
+          structure.type = 'epic';
+          break;
+
+        case View:
+          const children: ReactNode[] = child.props.children || [];
+
+          structure.children.push({
+            type: 'view',
+            nav,
+            children: children
+              .filter((child) => isValidElement(child) && child.props?.nav)
+              .map((child) => ({
+                type: 'panel',
+                nav: isValidElement(child) && child.props.nav
+              }))
+          });
+          break;
+
+        case VKUIRoot:
+        case VKUIEpic:
+        case VKUIView:
+          if (this.dev)
+            console.warn(
+              'В структуре обнаружены Root/Epic/View, импортированные из VKUI. Роутер может работать некорректно, пожалуйста, импортируйте их из @cteamdev/router.'
+            );
+      }
+    });
+
+    return structure;
+  }
+
+  public parsePath(path: string, meta?: Meta): State | void {
+    if (!this.structure) {
+      if (this.dev)
+        console.warn(
+          'Не удалось распарсить переданный path, так как структура не определена.'
+        );
+
+      return;
+    }
+
     const [nav, params] = path.split('?');
 
     const state: State = this.createState(
