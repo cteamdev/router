@@ -44,6 +44,8 @@ export class Router {
       ? this.parsePath(this.options.defaultRoute)!
       : this.createState();
     this.history = [this.state];
+
+    this.onPopstate = this.onPopstate.bind(this);
   }
 
   public get viewHistory(): string[] {
@@ -77,11 +79,11 @@ export class Router {
       this.getUrl(this.options.defaultRoute)
     );
 
-    window.addEventListener('popstate', this.onPopstate.bind(this));
+    window.addEventListener('popstate', this.onPopstate);
   }
 
   public stop(): void {
-    window.removeEventListener('popstate', this.onPopstate.bind(this));
+    window.removeEventListener('popstate', this.onPopstate);
   }
 
   public subscribe(subscriber: Subscriber): Unsubscriber {
@@ -99,6 +101,33 @@ export class Router {
     if (!state) return;
 
     state.id = Math.floor(Math.random() * 9999) + 1;
+
+    /* if (
+      this.structure?.type === 'epic' &&
+      this.style === 'desktop' &&
+      this.state.view !== state.view
+    ) {
+      const foundIndex: number = this.history
+        .slice()
+        .reverse()
+        .findIndex((currentState) => currentState.view === state.view);
+      const found: State | undefined =
+        this.history[this.history.length - foundIndex - 1];
+
+      console.log(JSON.stringify(found, null, 2));
+      console.log(JSON.stringify(this.history, null, 2));
+
+      if (
+        found &&
+        found.panel !==
+          this.structure.children.find((view) => view.nav === state.view)
+            ?.children[0].nav
+      ) {
+        history.go(-foundIndex);
+
+        return;
+      }
+    } */
 
     history.pushState(state, path, this.getUrl(path));
     this.history.push(state);
