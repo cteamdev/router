@@ -26,13 +26,12 @@ import { Root, Epic, View } from './components';
 import { dev, defaultOptions, platformStyle } from './constants';
 
 export class Router {
-  public options: Options;
+  private options: Options;
+  private subscribers: Subscriber[] = [];
 
   public structure: RootStructure | null;
   public state: State;
   public history: State[];
-
-  public subscribers: Subscriber[] = [];
 
   constructor(
     options: Partial<Options>,
@@ -73,11 +72,7 @@ export class Router {
   }
 
   public start(): void {
-    history.replaceState(
-      this.state,
-      this.options.defaultRoute,
-      this.getUrl(this.options.defaultRoute)
-    );
+    if (this.structure) this.replace(this.options.defaultRoute);
 
     window.addEventListener('popstate', this.onPopstate);
   }
@@ -183,7 +178,17 @@ export class Router {
     }
 
     this.structure = this.parseApp(app);
-    setTimeout(() => this.replace(this.options.defaultRoute), 0);
+
+    const defaultState: State | void = this.parsePath(
+      this.options.defaultRoute
+    );
+    if (
+      defaultState &&
+      (defaultState.view !== this.state.view ||
+        defaultState.panel !== this.state.panel ||
+        defaultState.params !== this.state.params)
+    )
+      setTimeout(() => this.replace(this.options.defaultRoute), 0);
   }
 
   public closeApp(): void {
