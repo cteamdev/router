@@ -95,6 +95,18 @@ export class Router {
     this.emit(RouterEvent.PUSH, state);
   }
 
+  public replace(path: string, meta?: Meta): void {
+    const state: State | void = this.parsePath(path, meta);
+    if (!state) return;
+
+    state.id = Math.floor(Math.random() * 9999) + 1;
+
+    history.replaceState(state, path, this.getUrl(path));
+    this.history[this.history.length - 1] = state;
+
+    this.emit(RouterEvent.REPLACE, state);
+  }
+
   public back(): void {
     history.back();
   }
