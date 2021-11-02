@@ -36,7 +36,7 @@ export class Router {
   public swipebackHistory: string[];
 
   constructor(
-    options: Partial<Options>,
+    options: Partial<Options> = {},
     structure: RootStructure | null = null
   ) {
     this.options = { ...defaultOptions, ...options };
@@ -50,10 +50,6 @@ export class Router {
     this.onPopstate = this.onPopstate.bind(this);
   }
 
-  public get shouldClose(): boolean {
-    return bridge.supports('VKWebAppClose') && this.options.shouldClose;
-  }
-
   public get style(): Style {
     if (bridge.isEmbedded()) {
       const params: URLSearchParams = new URLSearchParams(location.search);
@@ -64,6 +60,10 @@ export class Router {
     }
 
     return 'desktop';
+  }
+
+  private get shouldClose(): boolean {
+    return bridge.supports('VKWebAppClose') && this.options.shouldClose;
   }
 
   public start(): void {
