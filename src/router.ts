@@ -14,7 +14,7 @@ import {
 } from './types';
 
 export class Router {
-  public state: State = this.parse(this.options.defaultRoute);
+  public state: State = this.parsePath(this.options.defaultRoute);
 
   public history: State[] = [this.state];
   public subscribers: Subscriber[] = [];
@@ -57,7 +57,7 @@ export class Router {
   }
 
   public push(path: string, meta?: Meta): void {
-    const state: State = this.parse(path, meta);
+    const state: State = this.parsePath(path, meta);
     state.id = Math.floor(Math.random() * 9999) + 1;
 
     history.pushState(state, path, this.getUrl(path));
@@ -111,7 +111,7 @@ export class Router {
     return urls[this.options.mode];
   }
 
-  public parse(path: string, meta?: Meta): State {
+  public parsePath(path: string, meta?: Meta): State {
     const [nav, params] = path.split('?');
 
     const state: State = this.createState(

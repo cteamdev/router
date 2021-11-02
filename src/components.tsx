@@ -17,13 +17,16 @@ type RouterProps = {
   value: Router;
 };
 
-export const RouterProvider: FC<RouterProps> = ({ value, children }) => {
-  const [, setState] = useState(value.state);
+export const RouterProvider: FC<RouterProps> = ({
+  value: router,
+  children
+}) => {
+  const [, setState] = useState(router.state);
 
-  useEffect(() => value.subscribe((_, state) => setState(state)), []);
+  useEffect(() => router.subscribe((_, state) => setState(state)), []);
 
   return (
-    <RouterContext.Provider value={value}>
+    <RouterContext.Provider value={router}>
       {Children.map(children, (child) =>
         cloneElement(child as DetailedReactHTMLElement<any, HTMLElement>, null)
       )}
