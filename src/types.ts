@@ -3,6 +3,7 @@ export type Mode = 'none' | 'path' | 'hash';
 export type Options = {
   mode: Mode;
   defaultRoute: string;
+  shouldClose: boolean;
 };
 
 export type Params = Record<string, string>;

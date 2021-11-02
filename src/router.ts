@@ -7,6 +7,8 @@ import {
   View as VKUIView
 } from '@vkontakte/vkui';
 
+import bridge from '@vkontakte/vk-bridge';
+
 import {
   Options,
   State,
@@ -20,23 +22,28 @@ import {
   RouterEvent
 } from './types';
 import { Root, Epic, View } from './components';
+import { defaultOptions, dev } from './constants';
 
 export class Router {
-  public state: State = this.structure
-    ? this.parsePath(this.options.defaultRoute)!
-    : this.createState();
-  public history: State[] = [this.state];
+  public options: Options;
 
-  public dev: boolean =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    (process.env.NODE_ENV || import.meta.env.MODE) === 'development';
+  public structure: RootStructure | null;
+  public state: State;
+  public history: State[];
+
   public subscribers: Subscriber[] = [];
 
   constructor(
-    public options: Options,
-    public structure: RootStructure | null = null
-  ) {}
+    options: Partial<Options>,
+    structure: RootStructure | null = null
+  ) {
+    this.options = { ...defaultOptions, ...options };
+    this.structure = structure;
+    this.state = this.structure
+      ? this.parsePath(this.options.defaultRoute)!
+      : this.createState();
+    this.history = [this.state];
+  }
 
   public get viewHistory(): string[] {
     const view: string = this.state.view;
@@ -44,6 +51,10 @@ export class Router {
     return this.history
       .filter((state) => state.view === view)
       .map((state) => state.panel);
+  }
+
+  public get shouldClose(): boolean {
+    return bridge.supports('VKWebAppClose') && this.options.shouldClose;
   }
 
   public start(): void {
@@ -62,7 +73,7 @@ export class Router {
 
   public initStructure(app: ReactNode): void {
     if (this.structure) {
-      if (this.dev)
+      if (dev)
         console.warn(
           'Пропускаем автоматическую инициализацию структуры, так как она уже определена.'
         );
@@ -71,6 +82,10 @@ export class Router {
     }
 
     this.structure = this.parseApp(app);
+  }
+
+  public closeApp(): void {
+    if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
   }
 
   public subscribe(subscriber: Subscriber): Unsubscriber {
@@ -117,6 +132,8 @@ export class Router {
 
   public onPopstate({ state }: PopStateEvent): void {
     if (this.history.some((currentState) => currentState.id === state.id)) {
+      if (this.history.length === 1) this.closeApp();
+
       this.history.pop();
       this.emit(RouterEvent.BACK, state);
     } else {
@@ -191,7 +208,7 @@ export class Router {
         case VKUIRoot:
         case VKUIEpic:
         case VKUIView:
-          if (this.dev)
+          if (dev)
             console.warn(
               'В структуре обнаружены Root/Epic/View, импортированные из VKUI. Роутер может работать некорректно, пожалуйста, импортируйте их из @cteamdev/router.'
             );
@@ -203,7 +220,7 @@ export class Router {
 
   public parsePath(path: string, meta?: Meta): State | void {
     if (!this.structure) {
-      if (this.dev)
+      if (dev)
         console.warn(
           'Не удалось распарсить переданный path, так как структура не определена.'
         );
