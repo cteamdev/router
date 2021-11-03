@@ -7,7 +7,6 @@ import { dev } from './constants';
 
 export const useRouter = () => useContext(RouterContext)!;
 
-// TODO: Смена параметров при анимации
 export const useParams = <T extends Params>(): T => {
   const router = useRouter();
 
@@ -28,6 +27,7 @@ export const useParams = <T extends Params>(): T => {
   return (params as T) ?? {};
 };
 
+// TODO: Смена параметров при анимации
 export const useMeta = <T extends Meta>(): T => {
   const router = useRouter();
 

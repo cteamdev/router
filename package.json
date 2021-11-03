@@ -31,6 +31,7 @@
     "typescript": "^4.4.4"
   },
   "peerDependencies": {
+    "@vkontakte/icons": "^1.132.0",
     "@vkontakte/vk-bridge": "^2.4.8",
     "@vkontakte/vkui": "^4.20.0",
     "react": "^17.0.2",
