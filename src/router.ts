@@ -46,7 +46,13 @@ export class Router {
     this.history = [this.state];
     this.swipebackHistory = [this.state.panel];
 
-    this.onPopstate = this.onPopstate.bind(this);
+    this.start = this.start.bind(this);
+    this.stop = this.stop.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.push = this.push.bind(this);
+    this.replace = this.replace.bind(this);
+    this.back = this.back.bind(this);
+    this.go = this.go.bind(this);
   }
 
   public get style(): Style {
