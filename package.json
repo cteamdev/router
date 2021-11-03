@@ -1,6 +1,7 @@
 {
   "name": "@cteamdev/router",
   "version": "0.0.1",
+  "private": false,
   "description": "🔪 Многофункциональный роутер для приложений на React и VKUI",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
@@ -14,7 +15,8 @@
   "scripts": {
     "build": "yarn build:esm && yarn build:cjs",
     "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir lib/cjs"
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/react": "^17.0.33",
