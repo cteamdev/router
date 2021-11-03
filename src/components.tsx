@@ -24,7 +24,7 @@ export const RouterProvider: FC<RouterProps> = ({
 }) => {
   const [, setState] = useState(router.state);
 
-  useEffect(() => router.subscribe((_, state) => setState(state)), []);
+  useEffect(() => router.subscribe((_, state) => state && setState(state)), []);
 
   return (
     <RouterContext.Provider value={router}>
