@@ -2,10 +2,22 @@ import { useContext, useEffect } from 'react';
 import { parse } from 'querystring';
 
 import { RouterContext } from './context';
-import { Meta, Params, Mode } from './types';
+import { Meta, Params, Mode, State } from './types';
 import { dev } from './constants';
 
 export const useRouter = () => useContext(RouterContext)!;
+
+export const useCurrentState = (): State => {
+  const router = useRouter();
+
+  return router.state;
+};
+
+export const useHistory = (): State[] => {
+  const router = useRouter();
+
+  return router.history;
+};
 
 export const useParams = <T extends Params>(): T => {
   const router = useRouter();
