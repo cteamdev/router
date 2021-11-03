@@ -41,7 +41,7 @@ export class Router {
     this.options = { ...defaultOptions, ...options };
     this.structure = structure;
     this.state = this.structure
-      ? this.parsePath(this.options.defaultRoute)!
+      ? this.parseNav(this.options.defaultRoute)!
       : this.createState();
     this.history = [this.state];
     this.swipebackHistory = [this.state.panel];
@@ -86,7 +86,7 @@ export class Router {
   }
 
   public push(path: string, meta?: Meta): void {
-    const state: State | void = this.parsePath(path, meta);
+    const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
     state.id = Math.floor(Math.random() * 9999) + 1;
@@ -128,7 +128,7 @@ export class Router {
   }
 
   public replace(path: string, meta?: Meta): void {
-    const state: State | void = this.parsePath(path, meta);
+    const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
     state.id = Math.floor(Math.random() * 9999) + 1;
@@ -189,9 +189,7 @@ export class Router {
 
     this.structure = this.parseApp(app);
 
-    const defaultState: State | void = this.parsePath(
-      this.options.defaultRoute
-    );
+    const defaultState: State | void = this.parseNav(this.options.defaultRoute);
     if (defaultState)
       setTimeout(() => this.replace(this.options.defaultRoute), 0);
   }
@@ -270,7 +268,7 @@ export class Router {
     return structure;
   }
 
-  private parsePath(path: string, meta?: Meta): State | void {
+  public parseNav(path: string, meta?: Meta): State | void {
     if (!this.structure) {
       if (dev)
         console.warn(
