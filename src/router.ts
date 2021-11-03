@@ -1,5 +1,4 @@
 import { isValidElement, JSXElementConstructor, ReactNode } from 'react';
-import { parse } from 'querystring';
 import { deepForEach } from 'react-children-utilities';
 import {
   Root as VKUIRoot,
@@ -17,7 +16,6 @@ import {
   Unsubscriber,
   UnknownStructure,
   Mode,
-  Params,
   Meta,
   RouterEvent,
   Style
@@ -26,14 +24,15 @@ import { Root, Epic, View } from './components';
 import { dev, defaultOptions, platformStyle } from './constants';
 
 export class Router {
-  private options: Options;
-  private subscribers: Subscriber[] = [];
+  public options: Options;
 
   public structure: RootStructure | null;
   public state: State;
   public history: State[];
 
   public swipebackHistory: string[];
+
+  private subscribers: Subscriber[] = [];
 
   constructor(
     options: Partial<Options> = {},
@@ -153,6 +152,8 @@ export class Router {
   }
 
   private onPopstate({ state }: PopStateEvent): void {
+    if (!state) return this.emit(RouterEvent.UPDATE, null);
+
     if (this.history.some((currentState) => currentState.id === state.id)) {
       if (this.history.length === 1) this.closeApp();
 
@@ -170,8 +171,9 @@ export class Router {
     }
   }
 
-  private emit(event: RouterEvent, state: State): void {
-    this.state = state;
+  private emit(event: RouterEvent, state: State | null): void {
+    if (state) this.state = state;
+
     this.subscribers.forEach((subscriber) => subscriber(event, state));
   }
 
@@ -193,8 +195,7 @@ export class Router {
     if (
       defaultState &&
       (defaultState.view !== this.state.view ||
-        defaultState.panel !== this.state.panel ||
-        defaultState.params !== this.state.params)
+        defaultState.panel !== this.state.panel)
     )
       setTimeout(() => this.replace(this.options.defaultRoute), 0);
   }
@@ -203,15 +204,14 @@ export class Router {
     if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
   }
 
-  private createState(params?: Params, meta?: Meta): State {
+  private createState(meta?: Meta): State {
     return {
       view: '/',
       panel: '/',
 
       id: 0,
 
-      meta: meta ?? {},
-      params: params ?? {}
+      meta: meta ?? {}
     };
   }
 
@@ -284,12 +284,9 @@ export class Router {
       return;
     }
 
-    const [nav, params] = path.split('?');
+    const [nav] = path.split('?');
 
-    const state: State = this.createState(
-      params ? (parse(params) as Params) : undefined,
-      meta
-    );
+    const state: State = this.createState(meta);
 
     let navIndex: number = 0;
     const navs: string[] = nav

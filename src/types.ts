@@ -17,17 +17,17 @@ export type State = {
 
   id: number | null;
 
-  params: Params;
   meta: Meta;
 };
 
 export enum RouterEvent {
   BACK,
   PUSH,
-  REPLACE
+  REPLACE,
+  UPDATE
 }
 export type Unsubscriber = () => void;
-export type Subscriber = (event: RouterEvent, state: State) => void;
+export type Subscriber = (event: RouterEvent, state: State | null) => void;
 
 export type RootStructure = {
   type: 'epic' | 'root';
