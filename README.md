@@ -63,6 +63,7 @@ import { Root, Epic, View } from '@vkontakte/vkui';
 | `replace(path: string, meta?: Meta)` | - `path` - путь к странице. <br/>- `meta` - метаданные, которые нужно передать. | Заменить текущую страницу на переданную. |
 | `back()` | - | Вернуться к предыдущей странице. |
 | `go(delta: number)` | - `delta` - количество шагов. | Перейти на `delta` шагов вперёд/назад. |
+| `subscribe(subscriber: Subscriber): Unsubcriber` | - `subscriber` - обработчик событий. | Подписаться на события роутера. |
 
 ## Пропы
 | Проп | Описание |
@@ -125,6 +126,30 @@ const Persik: FC<Props> = ({ nav }) => {
         </Button>
       </Div>
     </Panel>
+  );
+};
+```
+
+## Подписка на события
+Переход к следующей/предыдущей странице, смена хэша в адресной строке - это всё события. Чтобы подписаться на них, нужно вызвать метод `subscribe`, который возвращает функцию для отписки:
+```tsx
+const App: FC = () => {
+  const { subscribe } = useRouter();
+
+  useEffect(() => {
+    const handler = (event: RouterEvent, state: State | null) => {
+      console.log('Новое событие:', event, 'Состояние: ', state);
+
+      if (event === RouterEvent.PUSH) {
+        console.log('Переход к следующей панели', state?.panel);
+      }
+    };
+
+    return subscribe(handler);
+  }, []);
+
+  return (
+    ...
   );
 };
 ```
