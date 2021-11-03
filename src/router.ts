@@ -192,11 +192,7 @@ export class Router {
     const defaultState: State | void = this.parsePath(
       this.options.defaultRoute
     );
-    if (
-      defaultState &&
-      (defaultState.view !== this.state.view ||
-        defaultState.panel !== this.state.panel)
-    )
+    if (defaultState)
       setTimeout(() => this.replace(this.options.defaultRoute), 0);
   }
 
