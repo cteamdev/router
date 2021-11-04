@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@babel/runtime@^7.14.6":
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.0.tgz#e27b977f2e2088ba24748bf99b5e1dece64e4f0b"
+  integrity sha512-Nht8L0O8YCktmsDV6FqFue7vQLRx3Hb0B37lS5y0jDRqRxlBG4wIJHnf9/bgSE2UyipKFA01YtS+npRdTWBUyw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@eslint/eslintrc@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.0.3.tgz#41f08c597025605f672251dcc4e8be66b5ed7366"
@@ -51,6 +58,11 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@popperjs/core@^2.9.2":
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.2.tgz#0798c03351f0dea1a5a4cabddf26a55a7cbee590"
+  integrity sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==
 
 "@types/json-schema@^7.0.9":
   version "7.0.9"
@@ -152,6 +164,27 @@
   dependencies:
     "@typescript-eslint/types" "5.3.0"
     eslint-visitor-keys "^3.0.0"
+
+"@vkontakte/vk-bridge@^2.4.8":
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.4.8.tgz#379bbd24a059490426a33a0818e240d7ec8860a7"
+  integrity sha512-YGTZZsm9OO/JRRBM6HHGCPMN3yiQcBUxFLCK7bCUcFWvWghFZdWQvPtuCKXONwhBMwp1Wo90kSV5rXSvJA8lOQ==
+
+"@vkontakte/vkjs@^0.22.1":
+  version "0.22.1"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkjs/-/vkjs-0.22.1.tgz#ab740365626873fd7940c3b430d438d5bf33b110"
+  integrity sha512-gDlJYAIIH4K0L8Qz2bE/cIdz5XWSwvEVytkK4mXC7lGTVTF/PuidUb8MZ792AaqTxdoASOoBD1Jy89q/GjaOSg==
+
+"@vkontakte/vkui@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.20.0.tgz#c8a9c94655ce856f2d1f743cff65a1d0f75a68a7"
+  integrity sha512-rLclEwa1VuRnzr/krWTNTLydXFonOFlKTHzNrF9miljtoZj6XaF1vKNG6CETRWFRJZ/dSJ3UQ30zmBwtgvT7Lw==
+  dependencies:
+    "@babel/runtime" "^7.14.6"
+    "@popperjs/core" "^2.9.2"
+    "@vkontakte/vkjs" "^0.22.1"
+    mitt "^3.0.0"
+    react-popper "^2.2.5"
 
 acorn-jsx@^5.3.1:
   version "5.3.2"
@@ -907,7 +940,7 @@ lodash.merge@^4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
-loose-envify@^1.4.0:
+loose-envify@^1.0.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -940,6 +973,11 @@ minimatch@^3.0.4:
   integrity sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==
   dependencies:
     brace-expansion "^1.1.7"
+
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==
 
 ms@2.1.2:
   version "2.1.2"
@@ -1113,10 +1151,28 @@ react-children-utilities@^2.6.3:
   resolved "https://registry.yarnpkg.com/react-children-utilities/-/react-children-utilities-2.6.3.tgz#137dea9b140863639448073a91fd4eda68a3101b"
   integrity sha512-ncP/JU26u/V8PyORIUzR2+yMb8YSGKLMbaqo9xwvQlNUAXMyUk2mja4torT7HKvGAzknMPR9Qnl2U6c7KD4kZw==
 
+react-fast-compare@^3.0.1:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
+  integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
 react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-popper@^2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.2.5.tgz#1214ef3cec86330a171671a4fbcbeeb65ee58e96"
+  integrity sha512-kxGkS80eQGtLl18+uig1UIf9MKixFSyPxglsgLBxlYnyDf65BiY9B3nZSc6C9XUNDgStROB0fMQlTEz1KxGddw==
+  dependencies:
+    react-fast-compare "^3.0.1"
+    warning "^4.0.2"
+
+regenerator-runtime@^0.13.4:
+  version "0.13.9"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
+  integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
 
 regexp.prototype.flags@^1.3.1:
   version "1.3.1"
@@ -1317,6 +1373,13 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+warning@^4.0.2:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/warning/-/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"
+  integrity sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==
+  dependencies:
+    loose-envify "^1.0.0"
 
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
