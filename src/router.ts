@@ -53,6 +53,8 @@ export class Router {
     this.replace = this.replace.bind(this);
     this.back = this.back.bind(this);
     this.go = this.go.bind(this);
+
+    this.onPopstate = this.onPopstate.bind(this);
   }
 
   public get style(): Style {
