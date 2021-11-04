@@ -1,4 +1,9 @@
-import { isValidElement, JSXElementConstructor, ReactNode } from 'react';
+import {
+  Children,
+  isValidElement,
+  JSXElementConstructor,
+  ReactNode
+} from 'react';
 import { deepForEach } from 'react-children-utilities';
 import {
   Root as VKUIRoot,
@@ -222,7 +227,7 @@ export class Router {
           break;
 
         case View:
-          const children: ReactNode[] = child.props.children || [];
+          const children: ReactNode[] = Children.toArray(child.props.children);
 
           structure.children.push({
             type: 'view',
