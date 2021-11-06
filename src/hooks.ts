@@ -39,9 +39,17 @@ export const useParams = <T extends Params>(): T => {
   return (params as T) ?? {};
 };
 
-// TODO: Смена параметров при анимации
-export const useMeta = <T extends Meta>(): T => {
+export const useMeta = <T extends Meta>(id?: number | null): T => {
   const router = useRouter();
 
-  return (router.state.meta as T) ?? {};
+  if (id && dev)
+    console.warn(
+      'Прокидывание `id` в хук `useMeta` - экспериментальная функция. Могут возникнуть баги, будьте внимательны.'
+    );
+
+  const found: State | undefined = router.list.find(
+    (currentState) => currentState.id === id
+  );
+
+  return found ? (found.meta as T) ?? {} : (router.state.meta as T) ?? {};
 };

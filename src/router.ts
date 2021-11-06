@@ -34,6 +34,7 @@ export class Router {
   public structure: RootStructure | null;
   public state: State;
   public history: State[];
+  public list: State[];
 
   public swipebackHistory: string[];
 
@@ -49,6 +50,7 @@ export class Router {
       ? this.parseNav(this.options.defaultRoute)!
       : this.createState();
     this.history = [this.state];
+    this.list = [this.state];
     this.swipebackHistory = [this.state.panel];
 
     this.start = this.start.bind(this);
@@ -102,10 +104,11 @@ export class Router {
     const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
-    state.id = Math.floor(Math.random() * 9999) + 1;
+    state.id = this.getRandomId();
 
     history.pushState(state, path, this.getUrl(path));
     this.history.push(state);
+    this.list.push(state);
 
     if (this.state.view === state.view) this.swipebackHistory.push(state.panel);
     else this.swipebackHistory = [state.panel];
@@ -117,10 +120,11 @@ export class Router {
     const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
-    state.id = Math.floor(Math.random() * 9999) + 1;
+    state.id = this.state.id;
 
     history.replaceState(state, path, this.getUrl(path));
     this.history[this.history.length - 1] = state;
+    this.list[this.list.length - 1] = state;
 
     if (this.state.view === state.view)
       this.swipebackHistory[this.swipebackHistory.length - 1] = state.panel;
@@ -177,7 +181,11 @@ export class Router {
 
     const defaultState: State | void = this.parseNav(this.options.defaultRoute);
     if (defaultState)
-      setTimeout(() => this.replace(this.options.defaultRoute), 0);
+      setTimeout(() => this.replace(this.options.defaultRoute, undefined), 0);
+  }
+
+  public getRandomId(): number {
+    return Math.floor(Math.random() * 9999) + 1;
   }
 
   public closeApp(): void {
@@ -189,7 +197,7 @@ export class Router {
       view: '/',
       panel: '/',
 
-      id: 0,
+      id: this.getRandomId(),
 
       meta: meta ?? {}
     };
