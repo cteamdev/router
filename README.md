@@ -144,7 +144,7 @@ const refId = useRef(state.id);
 ```tsx
 const meta = useMeta(refId.current);
 ```
-> Известный баг: ломается про использовании свайпбэка - https://github.com/cteamdev/router/issues/6.
+> Известный баг: ломается при использовании свайпбэка - https://github.com/cteamdev/router/issues/6.
 
 ## Блокировка навигации
 Например, вам нужно не выпускать пользователя из игры. С этой задачей отлично справится блокировка:
