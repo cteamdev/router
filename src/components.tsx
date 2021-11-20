@@ -9,7 +9,10 @@ import {
   EpicProps,
   ViewProps
 } from '@vkontakte/vkui';
-import { ViewInfinite as VKUIViewInfinite } from '@vkontakte/vkui/unstable';
+import {
+  ViewInfinite as VKUIViewInfinite,
+  ViewInfiniteProps
+} from '@vkontakte/vkui/unstable';
 
 import { Router } from './router';
 import { RouterContext } from './context';
@@ -78,7 +81,7 @@ export const Epic = (props: Omit<EpicProps, 'activeStory'>) => (
 
 export const ViewInfinite = (
   props: Omit<
-    ViewProps,
+    ViewInfiniteProps,
     'activePanel' | 'history' | 'onSwipeBack' | 'onBackCheck'
   >
 ) => (
