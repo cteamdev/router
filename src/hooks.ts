@@ -42,11 +42,6 @@ export const useParams = <T extends Params>(): T => {
 export const useMeta = <T extends Meta>(id?: number | null): T => {
   const router = useRouter();
 
-  if (id && dev)
-    console.warn(
-      'Прокидывание `id` в хук `useMeta` - экспериментальная функция. Могут возникнуть баги, будьте внимательны.'
-    );
-
   const found: State | undefined = router.list.find(
     (currentState) => currentState.id === id
   );
