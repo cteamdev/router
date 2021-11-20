@@ -10,6 +10,7 @@ import {
   Epic as VKUIEpic,
   View as VKUIView
 } from '@vkontakte/vkui';
+import { ViewInfinite as VKUIViewInfinite } from '@vkontakte/vkui/unstable';
 
 import bridge from '@vkontakte/vk-bridge';
 
@@ -25,7 +26,7 @@ import {
   RouterEvent,
   Style
 } from './types';
-import { Root, Epic, View } from './components';
+import { Root, Epic, View, ViewInfinite } from './components';
 import { dev, defaultOptions, platformStyle } from './constants';
 
 export class Router {
@@ -37,6 +38,7 @@ export class Router {
   public list: State[];
 
   public swipebackHistory: string[];
+  public isBack: boolean = false;
 
   public started: boolean = false;
   public locked: boolean = false;
@@ -66,6 +68,7 @@ export class Router {
     this.go = this.go.bind(this);
     this.lock = this.lock.bind(this);
     this.unlock = this.unlock.bind(this);
+    this.isBackCheck = this.isBackCheck.bind(this);
 
     this.onPopstate = this.onPopstate.bind(this);
   }
@@ -123,6 +126,7 @@ export class Router {
 
     state.id = this.getRandomId();
 
+    this.isBack = false;
     history.pushState(state, path, this.getUrl(path));
     this.history.push(state);
     this.list.push(state);
@@ -141,6 +145,7 @@ export class Router {
 
     state.id = this.state.id;
 
+    this.isBack = false;
     history.replaceState(state, path, this.getUrl(path));
     this.history[this.history.length - 1] = state;
     this.list[this.list.length - 1] = state;
@@ -178,6 +183,11 @@ export class Router {
     this.locked = false;
   }
 
+  public isBackCheck(): boolean {
+    console.log(this.isBack);
+    return this.isBack;
+  }
+
   private onPopstate({ state }: PopStateEvent): void {
     if (this.shouldSkipPopstate) {
       this.shouldSkipPopstate = false;
@@ -197,6 +207,7 @@ export class Router {
 
       if (this.history.length === 1) this.closeApp();
 
+      this.isBack = true;
       this.history.pop();
       this.swipebackHistory.pop();
       this.emit(RouterEvent.BACK, state);
@@ -208,6 +219,7 @@ export class Router {
         return;
       }
 
+      this.isBack = false;
       this.history.push(state);
 
       if (this.state.view === state.view)
@@ -294,6 +306,7 @@ export class Router {
           break;
 
         case View:
+        case ViewInfinite:
           const children: ReactNode[] = Children.toArray(child.props.children);
 
           structure.children.push({
@@ -311,6 +324,7 @@ export class Router {
         case VKUIRoot:
         case VKUIEpic:
         case VKUIView:
+        case VKUIViewInfinite:
           if (dev)
             console.warn(
               'В структуре обнаружены Root/Epic/View, импортированные из VKUI. Роутер может работать некорректно, пожалуйста, импортируйте их из @cteamdev/router.'
