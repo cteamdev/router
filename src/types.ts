@@ -12,6 +12,8 @@ export type Params = Record<string, string>;
 export type Meta = Record<string, unknown>;
 
 export type State = {
+  path: string;
+
   view: string;
   panel: string;
 

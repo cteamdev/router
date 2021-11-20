@@ -38,7 +38,11 @@ export class Router {
 
   public swipebackHistory: string[];
 
+  public started: boolean = false;
+  public locked: boolean = false;
+
   private subscribers: Subscriber[] = [];
+  private shouldSkipPopstate: boolean = false;
 
   constructor(
     options: Partial<Options> = {},
@@ -48,7 +52,7 @@ export class Router {
     this.structure = structure;
     this.state = this.structure
       ? this.parseNav(this.options.defaultRoute)!
-      : this.createState();
+      : this.createState(this.options.defaultRoute);
     this.history = [this.state];
     this.list = [this.state];
     this.swipebackHistory = [this.state.panel];
@@ -60,6 +64,8 @@ export class Router {
     this.replace = this.replace.bind(this);
     this.back = this.back.bind(this);
     this.go = this.go.bind(this);
+    this.lock = this.lock.bind(this);
+    this.unlock = this.unlock.bind(this);
 
     this.onPopstate = this.onPopstate.bind(this);
   }
@@ -81,12 +87,21 @@ export class Router {
   }
 
   public start(): void {
+    if (this.started)
+      return console.error('Роутер уже запущен, невозможно запустить снова.');
     if (this.structure) this.replace(this.options.defaultRoute);
 
+    this.started = true;
     window.addEventListener('popstate', this.onPopstate);
   }
 
   public stop(): void {
+    if (!this.started)
+      return console.error(
+        'Роутер уже остановлен, невозможно остановить снова.'
+      );
+
+    this.started = false;
     window.removeEventListener('popstate', this.onPopstate);
   }
 
@@ -101,6 +116,8 @@ export class Router {
   }
 
   public push(path: string, meta?: Meta): void {
+    if (this.locked) return;
+
     const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
@@ -117,6 +134,8 @@ export class Router {
   }
 
   public replace(path: string, meta?: Meta): void {
+    if (this.locked) return;
+
     const state: State | void = this.parseNav(path, meta);
     if (!state) return;
 
@@ -134,23 +153,61 @@ export class Router {
   }
 
   public back(): void {
+    if (this.locked) return;
+
     history.back();
   }
 
+  public forward(): void {
+    if (this.locked) return;
+
+    history.forward();
+  }
+
   public go(delta: number): void {
+    if (this.locked) return;
+
     history.go(delta);
   }
 
+  public lock(): void {
+    this.locked = true;
+  }
+
+  public unlock(): void {
+    this.locked = false;
+  }
+
   private onPopstate({ state }: PopStateEvent): void {
+    if (this.shouldSkipPopstate) {
+      this.shouldSkipPopstate = false;
+      return;
+    }
+
     if (!state) return this.emit(RouterEvent.UPDATE, null);
 
+    // Назад
     if (this.history.some((currentState) => currentState.id === state.id)) {
+      if (this.locked) {
+        this.shouldSkipPopstate = true;
+        history.forward();
+
+        return;
+      }
+
       if (this.history.length === 1) this.closeApp();
 
       this.history.pop();
       this.swipebackHistory.pop();
       this.emit(RouterEvent.BACK, state);
     } else {
+      if (this.locked) {
+        this.shouldSkipPopstate = true;
+        history.back();
+
+        return;
+      }
+
       this.history.push(state);
 
       if (this.state.view === state.view)
@@ -192,8 +249,10 @@ export class Router {
     if (this.shouldClose) bridge.send('VKWebAppClose', { status: 'success' });
   }
 
-  private createState(meta?: Meta): State {
+  private createState(path: string, meta?: Meta): State {
     return {
+      path,
+
       view: '/',
       panel: '/',
 
@@ -274,7 +333,7 @@ export class Router {
 
     const [nav] = path.split('?');
 
-    const state: State = this.createState(meta);
+    const state: State = this.createState(path, meta);
 
     let navIndex: number = 0;
     const navs: string[] = nav
