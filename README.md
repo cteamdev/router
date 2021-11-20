@@ -144,7 +144,47 @@ const refId = useRef(state.id);
 ```tsx
 const meta = useMeta(refId.current);
 ```
-Просьба сообщать о всех багах в issue - https://github.com/cteamdev/router/issues/new.
+> Известный баг: ломается про использовании свайпбэка - https://github.com/cteamdev/router/issues/6.
+
+## Блокировка навигации
+Например, вам нужно не выпускать пользователя из игры. С этой задачей отлично справится блокировка:
+```tsx
+type Props = {
+  nav: string;
+};
+
+const Game: FC<Props> = ({ nav }) => {
+  const { back, lock, unlock } = useRouter();
+
+  useEffect(lock, []);
+
+  return (
+    <Panel nav={nav}>
+      <PanelHeader
+        left={<PanelHeaderBack onClick={back} />}
+      >
+        Игра
+      </PanelHeader>
+
+      <Div>
+        {/* Вжух, гонки! */}
+      </Div>
+
+      <Div>
+        <Button
+          size="l"
+          onClick={unlock}
+        >
+          Разблокировать
+        </Button>
+      </Div>
+    </Panel>
+  );
+};
+```
+
+## InfiniteView
+Нестабильный компонент VKUI. Использование точно такое же, как и с обычным `View` - направлением анимации и историей занимается роутер.
 
 ## Подписка на события
 Переход к следующей/предыдущей странице, смена хэша в адресной строке - это всё события. Чтобы подписаться на них, нужно вызвать метод `subscribe`, который возвращает функцию для отписки:
