@@ -30,15 +30,15 @@ export const useParams = <T extends Params>(): T => {
         hash: location.hash.split('?')[1]
       }[currentOptions.mode]
     ) as Params;
-  }, [currentState.id]);
+  }, [currentState?.id]);
 
   return (params ?? {}) as T;
 };
 
 export const useMeta = <T extends Meta>(id?: number | null): T => {
   const found: State | undefined = useMemo(
-    () => currentList.find((currentState) => currentState.id === id),
-    [currentState.id]
+    () => currentList.find((currentState) => currentState?.id === id),
+    [currentState?.id]
   );
 
   return (found?.meta ?? currentState?.meta ?? {}) as T;

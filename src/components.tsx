@@ -43,7 +43,7 @@ export const Router: FC<RouterProps> = ({ children }) => {
   return (
     <>
       <style>{`
-        .vkuiView__popout:empty {
+        .vkuiView__popout:empty, .vkuiPopoutRoot__popout:empty, .vkuiPopoutRoot--absolute:empty {
           display: none;
         }
       `}</style>
