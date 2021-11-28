@@ -1,4 +1,3 @@
-import { currentOptions } from './router';
 import { Listener, RemoveListener, RouterEvent, State } from './types';
 
 export let listeners: Listener[] = [];

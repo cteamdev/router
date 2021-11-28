@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { parse } from 'querystring';
 
 import { Meta, Params, Mode, State } from './types';
-import { dev } from './constants';
 import { currentHistory, currentState, currentList } from './history';
 import { currentOptions } from './router';
 
@@ -23,7 +22,10 @@ export const useParams = <T extends Params>(): T => {
   const params: Params = parse(locationProp[currentOptions.mode]) as Params;
 
   useEffect(() => {
-    if (currentOptions.mode === 'none' && dev)
+    if (
+      process.env.NODE_ENV === 'development' &&
+      currentOptions.mode === 'none'
+    )
       console.warn(
         'Параметры не могут быть получены, так как роутер работает в режиме без хранения страницы и параметров в адресной строке. Смените mode на path или hash, чтобы исправить.'
       );

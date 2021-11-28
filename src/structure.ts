@@ -11,7 +11,6 @@ import { ViewInfinite as VKUIViewInfinite } from '@vkontakte/vkui/unstable';
 
 import { Epic, Root, View, ViewInfinite } from './components';
 import { RootStructure, State } from './types';
-import { dev } from './constants';
 import { currentOptions, replace } from './router';
 import { initHistory, parseRoute } from './history';
 
@@ -20,7 +19,7 @@ export let currentStructure: RootStructure | null;
 export function initStructure(root: ReactNode | RootStructure): void {
   if (isStructure(root)) {
     if (currentStructure) {
-      if (dev)
+      if (process.env.NODE_ENV === 'development')
         console.error(
           'Невозможно изменить структуру, так как она уже определена.'
         );
@@ -31,7 +30,7 @@ export function initStructure(root: ReactNode | RootStructure): void {
     currentStructure = root;
   } else {
     if (currentStructure) {
-      if (dev)
+      if (process.env.NODE_ENV === 'development')
         console.warn(
           'Пропускаем автоматическую инициализацию структуры, так как она уже определена.'
         );
@@ -90,7 +89,7 @@ export function parseRoot(root: ReactNode): RootStructure {
       case VKUIEpic:
       case VKUIView:
       case VKUIViewInfinite:
-        if (dev)
+        if (process.env.NODE_ENV === 'development')
           console.warn(
             'В структуре обнаружены Root/Epic/View, импортированные из VKUI. Роутер может работать некорректно, пожалуйста, импортируйте их из @cteamdev/router.'
           );

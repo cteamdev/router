@@ -1,5 +1,4 @@
 import { Meta, Mode, State, UnknownStructure } from './types';
-import { dev } from './constants';
 import { currentOptions } from './router';
 import { currentStructure } from './structure';
 import { getRandomId } from './utils';
@@ -66,7 +65,7 @@ export function setShouldSkipPopstate(value: boolean): void {
 
 export function parseRoute(path: string, meta?: Meta): State | undefined {
   if (!currentStructure) {
-    if (dev)
+    if (process.env.NODE_ENV === 'development')
       console.warn(
         'Не удалось распарсить переданный path, так как структура не определена.'
       );
