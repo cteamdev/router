@@ -1,5 +1,3 @@
-import './components.css';
-
 import type { FC, DetailedReactHTMLElement, ReactElement } from 'react';
 
 import React, {
@@ -44,6 +42,12 @@ export const Router: FC<RouterProps> = ({ children }) => {
 
   return (
     <>
+      <style>{`
+        .vkuiView__popout:empty {
+          display: none;
+        }
+      `}</style>
+
       {Children.map(children, (child) =>
         cloneElement(child as DetailedReactHTMLElement<any, HTMLElement>, null)
       )}
