@@ -6,6 +6,7 @@ export type Options = {
   style: Style;
   defaultRoute: string;
   shouldClose: boolean;
+  debug: boolean;
 };
 
 export type Params = Record<string, string>;
@@ -28,8 +29,8 @@ export enum RouterEvent {
   REPLACE,
   UPDATE
 }
-export type Unsubscriber = () => void;
-export type Subscriber = (event: RouterEvent, state: State | null) => void;
+export type RemoveListener = () => void;
+export type Listener = (event: RouterEvent, state: State | null) => void;
 
 export type RootStructure = {
   type: 'epic' | 'root';

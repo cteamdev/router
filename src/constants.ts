@@ -9,7 +9,8 @@ export const defaultOptions: Options = {
   mode: 'hash',
   style: 'auto',
   defaultRoute: '/',
-  shouldClose: true
+  shouldClose: true,
+  debug: false
 };
 
 export const platformStyle: Record<string, Style> = {

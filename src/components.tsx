@@ -14,32 +14,29 @@ import {
   ViewInfiniteProps
 } from '@vkontakte/vkui/unstable';
 
-import { Router } from './router';
-import { RouterContext } from './context';
-import { useRouter } from './hooks';
+import { currentState, isBackCheck, swipebackHistory } from './history';
+import { subscribe } from './listeners';
+import { initStructure } from './structure';
+import { back } from './router';
 
 type RouterProps = {
-  value: Router;
+  children: ReactElement;
 };
 
-export const RouterProvider: FC<RouterProps> = ({
-  value: router,
-  children
-}) => {
-  const [, setState] = useState(router.state);
+export const Router: FC<RouterProps> = ({ children }: RouterProps) => {
+  const [, setState] = useState(currentState);
 
   useEffect(
-    () =>
-      router.subscribe((_, state) => setState(state ?? { ...router.state })),
+    () => subscribe((_, state) => setState(state ?? { ...currentState })),
     []
   );
 
   return (
-    <RouterContext.Provider value={router}>
+    <>
       {Children.map(children, (child) =>
         cloneElement(child as DetailedReactHTMLElement<any, HTMLElement>, null)
       )}
-    </RouterContext.Provider>
+    </>
   );
 };
 
@@ -48,75 +45,52 @@ type StructureProps = {
 };
 
 export const Structure: FC<StructureProps> = ({ children }: StructureProps) => {
-  const router = useRouter();
-
-  useEffect(() => router.initStructure(children), []);
+  useEffect(() => initStructure(children), []);
 
   return children;
 };
 
 export const Root = (props: Omit<RootProps, 'activeView'>) => (
-  <RouterContext.Consumer>
-    {(router) =>
-      router && (
-        <VKUIRoot activeView={router.state.view} {...props}>
-          {props.children}
-        </VKUIRoot>
-      )
-    }
-  </RouterContext.Consumer>
+  <VKUIRoot activeView={currentState?.view} {...props}>
+    {props.children}
+  </VKUIRoot>
 );
 
 export const Epic = (props: Omit<EpicProps, 'activeStory'>) => (
-  <RouterContext.Consumer>
-    {(router) =>
-      router && (
-        <VKUIEpic activeStory={router.state.view} {...props}>
-          {props.children}
-        </VKUIEpic>
-      )
-    }
-  </RouterContext.Consumer>
+  <VKUIEpic activeStory={currentState?.view} {...props}>
+    {props.children}
+  </VKUIEpic>
 );
 
+export const View = (
+  props: Omit<ViewProps, 'activePanel' | 'history' | 'onSwipeBack'>
+) => (
+  <VKUIView
+    activePanel={currentState?.panel}
+    history={swipebackHistory}
+    onSwipeBack={back}
+    {...props}
+  >
+    {props.children}
+  </VKUIView>
+);
+
+/**
+ * Как и компонент VKUI - нестабильный.
+ */
 export const ViewInfinite = (
   props: Omit<
     ViewInfiniteProps,
     'activePanel' | 'history' | 'onSwipeBack' | 'onBackCheck'
   >
 ) => (
-  <RouterContext.Consumer>
-    {(router) =>
-      router && (
-        <VKUIViewInfinite
-          activePanel={router.state.panel}
-          history={router.swipebackHistory}
-          onSwipeBack={router.back}
-          isBackCheck={router.isBackCheck}
-          {...props}
-        >
-          {props.children}
-        </VKUIViewInfinite>
-      )
-    }
-  </RouterContext.Consumer>
-);
-
-export const View = (
-  props: Omit<ViewProps, 'activePanel' | 'history' | 'onSwipeBack'>
-) => (
-  <RouterContext.Consumer>
-    {(router) =>
-      router && (
-        <VKUIView
-          activePanel={router.state.panel}
-          history={router.swipebackHistory}
-          onSwipeBack={router.back}
-          {...props}
-        >
-          {props.children}
-        </VKUIView>
-      )
-    }
-  </RouterContext.Consumer>
+  <VKUIViewInfinite
+    activePanel={currentState?.panel}
+    history={swipebackHistory}
+    onSwipeBack={back}
+    isBackCheck={isBackCheck}
+    {...props}
+  >
+    {props.children}
+  </VKUIViewInfinite>
 );

@@ -16,9 +16,40 @@ yarn add @cteamdev/router
 ```
 
 ## Подключение
-1. Создаём экземпляр класса `Router`:
-```typescript
-const router = new Router(options?, structure?);
+1. Оборачиваем приложение в компонент `Router` (важно это делать над `Structure`):
+```tsx
+<Router>
+  <App />
+</Router>
+```
+
+2. Если хотим автогенерацию структуры, то оборачиваем всю навигацию в компонент `Structure`:
+```tsx
+<Structure>
+  <Root>
+    ...
+  </Root>
+</Structure>
+```
+
+3. Все `Root`, `Epic` и `View` из `VKUI` заменяем на аналогичные компоненты из роутера:
+```tsx
+// Верно:
+import { Root, Epic, View } from '@cteamdev/router';
+
+// Не верно:
+import { Root, Epic, View } from '@vkontakte/vkui';
+```
+
+4. Инициализируем роутер (важно делать это как можно раньше - до первого рендера в главном файле):
+```tsx
+import { render } from 'react-dom';
+import { init } from '@cteamdev/router';
+
+import { App } from './App';
+
+init(options?: Options, structure?: RootStructure);
+render(<App />, document.getElementById('root'));
 ```
 ### `options`
 Необязательно. Настройки роутера.
@@ -28,52 +59,17 @@ const router = new Router(options?, structure?);
 | `style` | `auto` | Стиль навигации. Принимает значения `auto`, `mobile` и `desktop`. |
 | `defaultRoute` | `/` | Страница по умолчанию. Не рекомендуется использовать при автоопределении структуры или не пустом экране на странице `/`. |
 | `shouldClose` | `true`, если доступен `vk-bridge` | Нужно ли закрывать приложение при нажатии кнопки *Назад* и отсутствии элементов в истории. |
+| `debug` | `false` | Режим отладки (вывод событий в консоль). |
 ### `structure`
 Необязательно. Структура навигации, если не указана - генерируется автоматически.
 
-2. Если не указали структуру на предыдущем шаге и хотим автогенерацию, то оборачиваем всю навигацию в компонент `Structure`:
-```tsx
-<Structure>
-  <Root>
-    ...
-  </Root>
-</Structure>
-```
-
-3. Оборачиваем приложение в компонент `RouterProvider` (важно это делать над `Structure`!) и передаём объект роутера в проп `value`:
-```tsx
-<RouterProvider value={router}>
-  <App />
-</RouterProvider>
-```
-
-4. Все `Root`, `Epic` и `View` из `VKUI` заменяем на аналогичные компоненты из роутера:
-```tsx
-// Верно:
-import { Root, Epic, View } from '@cteamdev/router';
-
-// Не верно:
-import { Root, Epic, View } from '@vkontakte/vkui';
-```
-
-## Методы
-| Метод | Параметры | Описание |
+## Основные функции навигации
+| Функция | Параметры | Описание |
 |-------|-----------|----------|
 | `push(path: string, meta?: Meta)` | - `path` - путь к странице. <br/>- `meta` - метаданные, которые нужно передать. | Перейти к следующей странице. |
 | `replace(path: string, meta?: Meta)` | - `path` - путь к странице. <br/>- `meta` - метаданные, которые нужно передать. | Заменить текущую страницу на переданную. |
 | `back()` | - | Вернуться к предыдущей странице. |
 | `go(delta: number)` | - `delta` - количество шагов. | Перейти на `delta` шагов вперёд/назад. |
-| `subscribe(subscriber: Subscriber): Unsubcriber` | - `subscriber` - обработчик событий. | Подписаться на события роутера. |
-
-## Пропы
-| Проп | Описание |
-|------|----------|
-| `structure` | Структура. |
-| `state` | Текущее состояние. |
-| `history` | История переходов. |
-| `swipebackHistory` | История переходов в конкретном `View`. Используется для Swipeback'ов. |
-| `style` | Стиль навигации. |
-
 
 ## Параметры и метаданные
 Параметры - это данные, которые хранятся в адресной строке. Передаются в методах `push` и `replace` вместе с `path`:
@@ -183,9 +179,6 @@ const Game: FC<Props> = ({ nav }) => {
 };
 ```
 
-## InfiniteView
-Нестабильный компонент VKUI. Использование точно такое же, как и с обычным `View` - направлением анимации и историей занимается роутер.
-
 ## Подписка на события
 Переход к следующей/предыдущей странице, смена хэша в адресной строке - это всё события. Чтобы подписаться на них, нужно вызвать метод `subscribe`, который возвращает функцию для отписки:
 ```tsx
@@ -209,6 +202,9 @@ const App: FC = () => {
   );
 };
 ```
+
+## ViewInfinite
+Нестабильный компонент VKUI. Использование точно такое же, как и с обычным `View` - направлением анимации и историей занимается роутер.
 
 ## Пример
 ```tsx
@@ -282,13 +278,18 @@ const App: FC = () => {
 };
 
 // index.tsx
-const router = new Router();
-router.start();
+import { render } from 'react-dom';
+import { init } from '@cteamdev/router';
 
-ReactDOM.render(
-  <RouterProvider value={router}>
+import { App } from './App';
+
+init({
+  debug: true
+});
+render(
+  <Router>
     <App />
-  </RouterProvider>,
+  </Router>,
   document.getElementById('root')
 );
 ```

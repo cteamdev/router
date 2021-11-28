@@ -183,10 +183,10 @@
   resolved "https://registry.yarnpkg.com/@vkontakte/vkjs/-/vkjs-0.22.1.tgz#ab740365626873fd7940c3b430d438d5bf33b110"
   integrity sha512-gDlJYAIIH4K0L8Qz2bE/cIdz5XWSwvEVytkK4mXC7lGTVTF/PuidUb8MZ792AaqTxdoASOoBD1Jy89q/GjaOSg==
 
-"@vkontakte/vkui@^4.22.0":
-  version "4.22.0"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.22.0.tgz#23c81882ca33cc9eb734ded3788080e3f5f32084"
-  integrity sha512-lsdVRrTvNDesa0G15J7hPkQcKAqAkBqpOGjnq9QQq+3uEqcJW3zz8HKzWvO3q0UL+bgQWfuJYEW4kOD4bvD6YQ==
+"@vkontakte/vkui@^4.22.2":
+  version "4.22.2"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.22.2.tgz#155bd67b3378bc2f6eba55421f720672036f0ace"
+  integrity sha512-FcLROR3Hrqys7qsvovYwmW85hax22OPwyO3soixc1q5gGYkwU1rn4KHT899bdnfZjLCN1zYp46pAAGDOc+A3Kw==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@popperjs/core" "^2.9.2"
@@ -1745,13 +1745,13 @@ postcss@^5.2.17:
     supports-color "^3.2.3"
 
 postcss@^8.3.6:
-  version "8.3.11"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.3.11.tgz#c3beca7ea811cd5e1c4a3ec6d2e7599ef1f8f858"
-  integrity sha512-hCmlUAIlUiav8Xdqw3Io4LcpA1DOt7h3LSTAC4G6JGHFFaWzI6qvFt9oilvl8BmkbBRX1IhM90ZAmpk68zccQA==
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.1.tgz#73051f825509ad1a716ef500108001bf3d1fa8f7"
+  integrity sha512-WqLs/TTzXdG+/A4ZOOK9WDZiikrRaiA+eoEb/jz2DT9KUhMNHgP7yKPO8vwi62ZCsb703Gwb7BMZwDzI54Y2Ag==
   dependencies:
     nanoid "^3.1.30"
     picocolors "^1.0.0"
-    source-map-js "^0.6.2"
+    source-map-js "^1.0.1"
 
 posthtml-parser@^0.2.0, posthtml-parser@^0.2.1:
   version "0.2.1"
@@ -2045,10 +2045,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-source-map-js@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-0.6.2.tgz#0bb5de631b41cfbda6cfba8bd05a80efdfd2385e"
-  integrity sha512-/3GptzWzu0+0MBQFrDKzw/DvvMTUORvgY6k6jd/VS6iCR4RDTKWH6v6WPwQoUO8667uQEf9Oe38DxAYWY5F/Ug==
+source-map-js@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.1.tgz#a1741c131e3c77d048252adfa24e23b908670caf"
+  integrity sha512-4+TN2b3tqOCd/kaGRJ/sTYA0tR0mdXx26ipdolxcwtJVqEnqNYvlCAt1q3ypy4QMlYus+Zh34RNtYLoq2oQ4IA==
 
 source-map-resolve@^0.5.0:
   version "0.5.3"
