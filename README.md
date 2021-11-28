@@ -142,6 +142,59 @@ const meta = useMeta(refId.current);
 ```
 > Известный баг: ломается про использовании свайпбэка - https://github.com/cteamdev/router/issues/6.
 
+## Модальные окна
+Чтобы использовать модальные окна, нужно импортировать компонент `ModalRoot` из роутера и использовать его вместо стандартного:
+```tsx
+import { ModalRoot } from '@cteamdev/router';
+
+//...
+<SplitLayout
+  modal={
+    <ModalRoot>
+      <MyModal nav="my" />
+    </ModalRoot>
+  }
+></SplitLayout>
+```
+
+Переход к модальному окну:
+```tsx
+push('/?modal=my');
+```
+
+## Попауты
+Чтобы использовать попауты окна, нужно импортировать компонент `PopoutRoot` из роутера:
+```tsx
+import { PopoutRoot } from '@cteamdev/router';
+
+//...
+<SplitLayout
+  popout={
+    <PopoutRoot>
+      <MyPopout nav="my" />
+      <ScreenSpinner id="loading" />
+    </PopoutRoot>
+  }
+></SplitLayout>
+```
+
+Переход к попауту:
+```tsx
+push('/?popout=my');
+```
+
+Чтобы нельзя было закрыть и вернуться через кнопку вперёд:
+```tsx
+push('/?popout=loading');
+lock();
+
+// После загрузки
+setTimeout(() => {
+  unlock();
+  replace('/');
+}, 2000);
+```
+
 ## Блокировка навигации
 Например, вам нужно не выпускать пользователя из игры. С этой задачей отлично справится блокировка:
 ```tsx
