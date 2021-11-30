@@ -1,16 +1,12 @@
-import { Options, Style } from './types';
+import { Options, Mode, Style } from './types';
 
+/**
+ * Стандартные настройки роутера
+ */
 export const defaultOptions: Options = {
-  mode: 'hash',
-  style: 'auto',
+  mode: Mode.HASH,
+  style: Style.AUTO,
   defaultRoute: '/',
   shouldClose: true,
   debug: false
-};
-
-export const platformStyle: Record<string, Style> = {
-  iphone: 'mobile',
-  android: 'mobile',
-  mobile_web: 'mobile',
-  desktop_web: 'desktop'
 };

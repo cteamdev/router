@@ -32,6 +32,9 @@ type RouterProps = {
   children: ReactElement;
 };
 
+/**
+ * Компонент-обёртка над приложением для работы обновления и стилей
+ */
 export const Router: FC<RouterProps> = ({ children }) => {
   const [, setState] = useState(currentState);
 
@@ -59,12 +62,18 @@ type StructureProps = {
   children: ReactElement;
 };
 
+/**
+ * Компонент-обёртка над структурой для автоматической генерации
+ */
 export const Structure: FC<StructureProps> = ({ children }) => {
   useEffect(() => initStructure(children), []);
 
   return children;
 };
 
+/**
+ * Компонент-обёртка над ModalRoot из VKUI
+ */
 export const ModalRoot: FC<Omit<ModalRootProps, 'activeModal' | 'onClose'>> = (
   props
 ) => {
@@ -77,8 +86,12 @@ export const ModalRoot: FC<Omit<ModalRootProps, 'activeModal' | 'onClose'>> = (
   );
 };
 
+/**
+ * Компонент-обёртка для работы попаутов
+ */
 export const PopoutRoot: FC = (props) => {
   const { popout = null } = useParams();
+  console.log(popout);
 
   const activePopout: ReactElement | undefined = popout
     ? (Children.toArray(props.children).find(
@@ -91,18 +104,27 @@ export const PopoutRoot: FC = (props) => {
   return activePopout ?? null;
 };
 
+/**
+ * Компонент-обёртка над Root из VKUI
+ */
 export const Root: FC<Omit<RootProps, 'activeView'>> = (props) => (
   <VKUIRoot activeView={currentState?.view} {...props}>
     {props.children}
   </VKUIRoot>
 );
 
+/**
+ * Компонент-обёртка над Epic из VKUI
+ */
 export const Epic: FC<Omit<EpicProps, 'activeStory'>> = (props) => (
   <VKUIEpic activeStory={currentState?.view} {...props}>
     {props.children}
   </VKUIEpic>
 );
 
+/**
+ * Компонент-обёртка над View из VKUI
+ */
 export const View: FC<
   Omit<ViewProps, 'activePanel' | 'history' | 'onSwipeBack'>
 > = (props) => (
@@ -117,7 +139,7 @@ export const View: FC<
 );
 
 /**
- * Как и компонент VKUI - нестабильный.
+ * Компонент-обёртка над ViewInfinite из VKUI. Нестабильный, как и оригинальный компонент
  */
 export const ViewInfinite: FC<
   Omit<

@@ -9,8 +9,12 @@ export let currentList: State[];
 export let swipebackHistory: string[];
 
 export let isBack: boolean = false;
+export let internalPopstate: boolean = false;
 export let shouldSkipPopstate: boolean = false;
 
+/**
+ * Инициализация истории
+ */
 export function initHistory(): void {
   currentState = currentStructure
     ? (parseRoute(currentOptions.defaultRoute) as State)
@@ -20,6 +24,11 @@ export function initHistory(): void {
   swipebackHistory = [currentState.panel];
 }
 
+/**
+ * Создание нового состояния
+ * @param path путь к странице
+ * @param meta метаданные
+ */
 export function createState(path: string, meta?: Meta): State {
   return {
     path,
@@ -33,36 +42,72 @@ export function createState(path: string, meta?: Meta): State {
   };
 }
 
+/**
+ * Получение URL для History API
+ * @param path путь к странице
+ */
 export function getHistoryURL(path: string): string {
   const urls: Record<Mode, string> = {
-    hash: '#' + path,
-    none: '',
-    path
+    [Mode.HASH]: '#' + path,
+    [Mode.NONE]: '',
+    [Mode.PATH]: path
   };
 
   return urls[currentOptions.mode];
 }
 
+/**
+ * Направление анимации для ViewInfinite
+ */
 export function isBackCheck(): boolean {
   return isBack;
 }
 
+/**
+ * Установка текущего состояния
+ * @param value новое значение
+ */
 export function setState(value: State): void {
   currentState = value;
 }
 
+/**
+ * Установка текущей истории свайпбэков
+ * @param value новое значение
+ */
 export function setSwipebackHistory(value: string[]): void {
   swipebackHistory = value;
 }
 
+/**
+ * Установка направления анимации для ViewInfinite
+ * @param value новое значение
+ */
 export function setIsBack(value: boolean): void {
   isBack = value;
 }
 
+/**
+ * Установка значения внутреннего перехода
+ * @param value новое значение
+ */
+export function setInternalPopstate(value: boolean): void {
+  internalPopstate = value;
+}
+
+/**
+ * Установка значения для пропуска действий в событии `popstate`
+ * @param value новое значение
+ */
 export function setShouldSkipPopstate(value: boolean): void {
   shouldSkipPopstate = value;
 }
 
+/**
+ * Парсинг пути к странице в состояние
+ * @param path путь к странице
+ * @param meta метаданные
+ */
 export function parseRoute(path: string, meta?: Meta): State | undefined {
   if (!currentStructure) {
     if (process.env.NODE_ENV === 'development')

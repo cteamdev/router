@@ -1,23 +1,32 @@
 import { useMemo } from 'react';
 import { parse } from 'querystring';
 
-import { Meta, Params, State } from './types';
+import { Meta, Params, State, Mode } from './types';
 import { currentHistory, currentState, currentList } from './history';
 import { currentOptions } from './router';
 
+/**
+ * Хук для использования текущего состояния роутера
+ */
 export const useCurrentState = (): State => {
   return currentState ?? {};
 };
 
+/**
+ * Хук для использования истории переходов роутера
+ */
 export const useHistory = (): State[] => {
   return currentHistory ?? [];
 };
 
+/**
+ * Хук для использования текущих параметров
+ */
 export const useParams = <T extends Params>(): T => {
   const params: Params = useMemo(() => {
     if (
       process.env.NODE_ENV === 'development' &&
-      currentOptions.mode === 'none'
+      currentOptions.mode === Mode.NONE
     )
       console.warn(
         'Параметры не могут быть получены, так как роутер работает в режиме без хранения страницы и параметров в адресной строке. Смените mode на path или hash, чтобы исправить.'
@@ -25,20 +34,23 @@ export const useParams = <T extends Params>(): T => {
 
     return parse(
       {
-        none: '',
-        path: location.search.slice(1),
-        hash: location.hash.split('?')[1]
+        [Mode.NONE]: '',
+        [Mode.PATH]: location.search.slice(1),
+        [Mode.HASH]: location.hash.split('?')[1]
       }[currentOptions.mode]
     ) as Params;
-  }, [currentState?.id]);
+  }, [currentState?.path]);
 
   return (params ?? {}) as T;
 };
 
+/**
+ * Хук для использования текущих метаданных
+ */
 export const useMeta = <T extends Meta>(id?: number | null): T => {
   const found: State | undefined = useMemo(
     () => currentList.find((currentState) => currentState?.id === id),
-    [currentState?.id]
+    [currentState?.path]
   );
 
   return (found?.meta ?? currentState?.meta ?? {}) as T;

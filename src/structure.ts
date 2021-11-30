@@ -16,6 +16,10 @@ import { initHistory, parseRoute } from './history';
 
 export let currentStructure: RootStructure | null;
 
+/**
+ * Инициализация структуры
+ * @param root структура или элемент, содержащий компоненты структуры
+ */
 export function initStructure(root: ReactNode | RootStructure): void {
   if (isStructure(root)) {
     if (currentStructure) {
@@ -48,6 +52,10 @@ export function initStructure(root: ReactNode | RootStructure): void {
     setTimeout(() => replace(currentOptions.defaultRoute, undefined), 0);
 }
 
+/**
+ * Парсинг элемента, содержащего компоненты структуры, в структуру
+ * @param root элемент, содержащий компоненты структуры
+ */
 export function parseRoot(root: ReactNode): RootStructure {
   const structure: RootStructure = {
     type: 'root',
@@ -99,9 +107,14 @@ export function parseRoot(root: ReactNode): RootStructure {
   return structure;
 }
 
+/**
+ * Guard для проверки значения на тип структуры
+ * @param root
+ */
 export const isStructure = <T>(
   root: T | RootStructure
 ): root is RootStructure =>
   root &&
-  (root as RootStructure).type &&
-  ['epic', 'root'].includes((root as RootStructure).type);
+  typeof (root as RootStructure).type === 'string' &&
+  ['epic', 'root'].includes((root as RootStructure).type) &&
+  Array.isArray((root as RootStructure).children);
