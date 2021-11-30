@@ -91,7 +91,6 @@ export const ModalRoot: FC<Omit<ModalRootProps, 'activeModal' | 'onClose'>> = (
  */
 export const PopoutRoot: FC = (props) => {
   const { popout = null } = useParams();
-  console.log(popout);
 
   const activePopout: ReactElement | undefined = popout
     ? (Children.toArray(props.children).find(
