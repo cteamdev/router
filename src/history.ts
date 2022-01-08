@@ -3,10 +3,10 @@ import { currentOptions } from './router';
 import { currentStructure } from './structure';
 import { getRandomId } from './utils';
 
-export let currentState: State;
-export let currentHistory: State[];
-export let currentList: State[];
-export let swipebackHistory: string[];
+export let currentState: State | null = null;
+export let currentHistory: State[] | null = null;
+export let currentList: State[] | null = null;
+export let swipebackHistory: string[] | null = null;
 
 export let isBack: boolean = false;
 export let internalPopstate: boolean = false;
@@ -17,8 +17,8 @@ export let shouldSkipPopstate: boolean = false;
  */
 export function initHistory(): void {
   currentState = currentStructure
-    ? (parseRoute(currentOptions.defaultRoute) as State)
-    : createState(currentOptions.defaultRoute);
+    ? (parseRoute(currentOptions?.defaultRoute ?? '/') as State)
+    : createState(currentOptions?.defaultRoute ?? '/');
   currentHistory = [currentState];
   currentList = [currentState];
   swipebackHistory = [currentState.panel];
@@ -53,7 +53,7 @@ export function getHistoryURL(path: string): string {
     [Mode.PATH]: path
   };
 
-  return urls[currentOptions.mode];
+  return urls[currentOptions?.mode ?? Mode.NONE];
 }
 
 /**

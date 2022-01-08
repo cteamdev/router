@@ -27,8 +27,8 @@ import {
 import { closeApp, getRandomId } from './utils';
 import { subscribe, emit } from './listeners';
 
-export let currentOptions: Options;
-export let currentLock: Lock;
+export let currentOptions: Options | null = null;
+export let currentLock: Lock | null = null;
 
 /**
  * Инициализация и запуск роутера
@@ -54,7 +54,7 @@ export function init(
  * Запуск роутера
  */
 export function start(): void {
-  if (currentStructure) replace(currentOptions.defaultRoute);
+  if (currentOptions && currentStructure) replace(currentOptions.defaultRoute);
 
   // Даже если слушатель уже добавлен, он не будет вызываться дважды
   window.addEventListener('popstate', onPopstate);
@@ -98,10 +98,10 @@ export function push<T extends Meta>(path: string, meta?: T): void {
   setIsBack(false);
 
   history.pushState(state, path, getHistoryURL(path));
-  currentHistory.push(state);
-  currentList.push(state);
+  currentHistory?.push(state);
+  currentList?.push(state);
 
-  if (currentState.view === state.view) swipebackHistory.push(state.panel);
+  if (currentState?.view === state.view) swipebackHistory?.push(state.panel);
   else setSwipebackHistory([state.panel]);
 
   setState(state);
@@ -119,15 +119,15 @@ export function replace<T extends Meta>(path: string, meta?: T): void {
   const state: State | undefined = parseRoute(path, meta);
   if (!state) return;
 
-  state.id = currentState.id;
+  state.id = currentState?.id ?? getRandomId();
 
   setIsBack(false);
 
   history.replaceState(state, path, getHistoryURL(path));
-  currentHistory[currentHistory.length - 1] = state;
-  currentList[currentList.length - 1] = state;
+  if (currentHistory) currentHistory[currentHistory.length - 1] = state;
+  if (currentList) currentList[currentList.length - 1] = state;
 
-  if (currentState.view === state.view)
+  if (swipebackHistory && currentState?.view === state.view)
     swipebackHistory[swipebackHistory.length - 1] = state.panel;
   else setSwipebackHistory([state.panel]);
 
@@ -185,7 +185,7 @@ export function onPopstate({ state }: PopStateEvent): void {
   if (!state) return emit(RouterEvent.UPDATE, null);
 
   // Назад
-  if (currentHistory.some((currentState) => currentState.id === state.id)) {
+  if (currentHistory?.some((currentState) => currentState.id === state.id)) {
     if (locked) {
       setShouldSkipPopstate(true);
       history.forward();
@@ -193,10 +193,10 @@ export function onPopstate({ state }: PopStateEvent): void {
       return;
     }
 
-    if (currentHistory.length === 1) closeApp();
+    if (currentHistory?.length === 1) closeApp();
 
-    currentHistory.pop();
-    swipebackHistory.pop();
+    currentHistory?.pop();
+    swipebackHistory?.pop();
 
     setIsBack(true);
     setState(state);
@@ -210,9 +210,9 @@ export function onPopstate({ state }: PopStateEvent): void {
       return;
     }
 
-    currentHistory.push(state);
+    currentHistory?.push(state);
 
-    if (currentState.view === state.view) swipebackHistory.push(state.panel);
+    if (currentState?.view === state.view) swipebackHistory?.push(state.panel);
     else setSwipebackHistory([state.panel]);
 
     setIsBack(false);

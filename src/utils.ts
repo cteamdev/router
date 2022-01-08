@@ -35,7 +35,9 @@ export function getStyle(): Style {
  * Должно ли приложение закрыться при отсутствии элементов в истории переходов
  */
 export function shouldClose(): boolean {
-  return bridge.supports('VKWebAppClose') && currentOptions.shouldClose;
+  return (
+    bridge.supports('VKWebAppClose') && (currentOptions?.shouldClose ?? false)
+  );
 }
 
 /**

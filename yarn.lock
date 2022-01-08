@@ -928,10 +928,17 @@
     "@babel/plugin-transform-react-jsx-development" "^7.16.0"
     "@babel/plugin-transform-react-pure-annotations" "^7.16.0"
 
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.14.6", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.12.5", "@babel/runtime@^7.8.4":
   version "7.16.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.3.tgz#b86f0db02a04187a3c17caa77de69840165d42d5"
   integrity sha512-WBwekcqacdY2e9AF/Q7WLFUWmdJGJTkbjqTjoMDgXkVZ3ZRUvOPsLb5KdwISoQVsbP+DQzVZW4Zhci0DvpbNTQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.14.6":
+  version "7.16.5"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
+  integrity sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -1231,10 +1238,10 @@
   resolved "https://registry.yarnpkg.com/@vkontakte/vkjs/-/vkjs-0.22.1.tgz#ab740365626873fd7940c3b430d438d5bf33b110"
   integrity sha512-gDlJYAIIH4K0L8Qz2bE/cIdz5XWSwvEVytkK4mXC7lGTVTF/PuidUb8MZ792AaqTxdoASOoBD1Jy89q/GjaOSg==
 
-"@vkontakte/vkui@^4.22.2":
-  version "4.22.2"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.22.2.tgz#155bd67b3378bc2f6eba55421f720672036f0ace"
-  integrity sha512-FcLROR3Hrqys7qsvovYwmW85hax22OPwyO3soixc1q5gGYkwU1rn4KHT899bdnfZjLCN1zYp46pAAGDOc+A3Kw==
+"@vkontakte/vkui@^4.23.0":
+  version "4.23.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.23.0.tgz#a352f19f1b9db16854ea860562ee15a24cbe37c6"
+  integrity sha512-F6HV+bJ2IW7G7r1PmMO8XufaHgOwHfFZV06KZdLi7HG//dyeXa3wQnZb3LipjmAPrnWro/HlvNOzKtnu2pGhKA==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@popperjs/core" "^2.9.2"

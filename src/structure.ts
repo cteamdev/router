@@ -14,7 +14,7 @@ import { RootStructure, State } from './types';
 import { currentOptions, replace } from './router';
 import { initHistory, parseRoute } from './history';
 
-export let currentStructure: RootStructure | null;
+export let currentStructure: RootStructure | null = null;
 
 /**
  * Инициализация структуры
@@ -47,9 +47,11 @@ export function initStructure(root: ReactNode | RootStructure): void {
 
   initHistory();
 
-  const defaultState: State | void = parseRoute(currentOptions.defaultRoute);
-  if (defaultState)
-    setTimeout(() => replace(currentOptions.defaultRoute, undefined), 0);
+  if (currentOptions?.defaultRoute)
+    setTimeout(
+      () => currentOptions && replace(currentOptions.defaultRoute, undefined),
+      0
+    );
 }
 
 /**
